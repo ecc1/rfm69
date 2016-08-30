@@ -9,34 +9,39 @@ import (
 )
 
 const (
-	spiSpeed  = 6000000 // Hz
-	resetPin  = 47      // Intel Edison GPIO for hardware reset
-	hwVersion = 0x0204
+	spiSpeed     = 6000000 // Hz
+	interruptPin = 46      // Intel Edison GPIO for receive interrupts
+	resetPin     = 47      // Intel Edison GPIO for hardware reset
+	hwVersion    = 0x0204
 )
 
 type flavor struct{}
 
-func (hw flavor) Name() string {
+func (f flavor) Name() string {
 	return "RFM69HCW"
 }
 
-func (hw flavor) Speed() int {
+func (f flavor) Speed() int {
 	return spiSpeed
 }
 
-func (hw flavor) ReadSingleAddress(addr byte) byte {
+func (f flavor) InterruptPin() int {
+	return interruptPin
+}
+
+func (f flavor) ReadSingleAddress(addr byte) byte {
 	return addr
 }
 
-func (hw flavor) ReadBurstAddress(addr byte) byte {
+func (f flavor) ReadBurstAddress(addr byte) byte {
 	return addr
 }
 
-func (hw flavor) WriteSingleAddress(addr byte) byte {
+func (f flavor) WriteSingleAddress(addr byte) byte {
 	return SpiWriteMode | addr
 }
 
-func (hw flavor) WriteBurstAddress(addr byte) byte {
+func (f flavor) WriteBurstAddress(addr byte) byte {
 	return SpiWriteMode | addr
 }
 
