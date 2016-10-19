@@ -18,7 +18,7 @@ func main() {
 
 	freq := uint32(916600000)
 	log.Println("")
-	log.Printf("Initializing radio to %d MHz", freq)
+	log.Printf("Initializing radio to %d Hz", freq)
 	r.InitRF(freq)
 	dumpRF(r)
 
