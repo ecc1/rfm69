@@ -9,6 +9,7 @@ import (
 )
 
 const (
+	spiDevice    = "/dev/spidev5.1"
 	spiSpeed     = 6000000 // Hz
 	interruptPin = 46      // Intel Edison GPIO for receive interrupts
 	resetPin     = 47      // Intel Edison GPIO for hardware reset
@@ -19,6 +20,10 @@ type flavor struct{}
 
 func (f flavor) Name() string {
 	return "RFM69HCW"
+}
+
+func (f flavor) SpiDevice() string {
+	return spiDevice
 }
 
 func (f flavor) Speed() int {
