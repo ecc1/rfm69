@@ -22,7 +22,7 @@ func (f flavor) Name() string {
 	return "RFM69HCW"
 }
 
-func (f flavor) SpiDevice() string {
+func (f flavor) SPIDevice() string {
 	return spiDevice
 }
 
@@ -43,11 +43,11 @@ func (f flavor) ReadBurstAddress(addr byte) byte {
 }
 
 func (f flavor) WriteSingleAddress(addr byte) byte {
-	return SpiWriteMode | addr
+	return SPIWriteMode | addr
 }
 
 func (f flavor) WriteBurstAddress(addr byte) byte {
-	return SpiWriteMode | addr
+	return SPIWriteMode | addr
 }
 
 type Radio struct {

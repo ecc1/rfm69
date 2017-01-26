@@ -31,7 +31,7 @@ func main() {
 	bw := uint32(100000)
 	log.Println("")
 	log.Printf("Changing channel bandwidth to %d Hz", bw)
-	r.SetChannelBw(bw)
+	r.SetChannelBW(bw)
 	dumpRF(r)
 
 	log.Println("")
@@ -56,5 +56,5 @@ func dumpRF(r *rfm69.Radio) {
 		log.Panicf("Unknown modulation mode %X", mod)
 	}
 	log.Printf("Bitrate: %d baud", r.Bitrate())
-	log.Printf("Channel BW: %d Hz", r.ChannelBw())
+	log.Printf("Channel BW: %d Hz", r.ChannelBW())
 }

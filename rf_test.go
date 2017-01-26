@@ -71,7 +71,7 @@ func TestBitrate(t *testing.T) {
 	}
 }
 
-func TestChannelBw(t *testing.T) {
+func TestChannelBW(t *testing.T) {
 	cases := []struct {
 		bw       uint32
 		r        byte
@@ -92,18 +92,18 @@ func TestChannelBw(t *testing.T) {
 		{300000, RxBwMant16 | 0<<RxBwExpShift, 250000},
 	}
 	for _, c := range cases {
-		r := channelBwToRegister(c.bw)
+		r := channelBWToRegister(c.bw)
 		if r != c.r {
-			t.Errorf("channelBwToRegister(%d) == %02X, want %02X", c.bw, r, c.r)
+			t.Errorf("channelBWToRegister(%d) == %02X, want %02X", c.bw, r, c.r)
 		}
-		bw := registerToChannelBw(c.r, ModulationTypeOOK)
+		bw := registerToChannelBW(c.r, ModulationTypeOOK)
 		if c.bwApprox != 0 {
 			if bw != c.bwApprox {
-				t.Errorf("registerToChannelBw(%02X) == %d, want %d", c.r, bw, c.bwApprox)
+				t.Errorf("registerToChannelBW(%02X) == %d, want %d", c.r, bw, c.bwApprox)
 			}
 		} else {
 			if bw != c.bw {
-				t.Errorf("registerToChannelBw(%02X) == %d, want %d", c.r, bw, c.bw)
+				t.Errorf("registerToChannelBW(%02X) == %d, want %d", c.r, bw, c.bw)
 			}
 		}
 	}

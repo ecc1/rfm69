@@ -4,7 +4,7 @@ package rfm69
 
 const (
 	FXOSC        = 32000000
-	SpiWriteMode = 1 << 7
+	SPIWriteMode = 1 << 7
 )
 
 // Common Configuration Registers
@@ -116,7 +116,7 @@ const (
 	RegTestAfc  = 0x71 // AFC offset for low modulation index AFC
 )
 
-type RfConfiguration struct {
+type RFConfiguration struct {
 	// Omit RegFifo to avoid reading or writing it with this struct.
 	RegOpMode        byte // Operating modes of the transceiver
 	RegDataModul     byte // Data operation mode and Modulation settings
@@ -203,7 +203,7 @@ type RfConfiguration struct {
 
 // Configuration register values after reset,
 // according to data sheet section 6.
-var ResetRfConfiguration = RfConfiguration{
+var ResetRFConfiguration = RFConfiguration{
 	RegOpMode:        0x04,
 	RegDataModul:     0x00,
 	RegBitrateMsb:    0x1A,
@@ -286,7 +286,7 @@ var ResetRfConfiguration = RfConfiguration{
 }
 
 // Default (recommended) values, according to data sheet section 6.
-var DefaultRfConfiguration = RfConfiguration{
+var DefaultRFConfiguration = RFConfiguration{
 	RegOpMode:        0x04,
 	RegDataModul:     0x00,
 	RegBitrateMsb:    0x1A,

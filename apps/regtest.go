@@ -34,7 +34,7 @@ func dumpRegs(r *rfm69.Radio) {
 	}
 	fmt.Printf("\nConfiguration registers:\n")
 	regs := r.ReadConfiguration().Bytes()
-	resetValue := rfm69.ResetRfConfiguration.Bytes()
+	resetValue := rfm69.ResetRFConfiguration.Bytes()
 	for i, v := range regs {
 		fmt.Printf("%02X  %02X  %08b", rfm69.RegOpMode+i, v, v)
 		r := resetValue[i]

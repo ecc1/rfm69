@@ -5,10 +5,10 @@ import (
 	"unsafe"
 )
 
-func TestRfConfiguration(t *testing.T) {
-	have := int(unsafe.Sizeof(RfConfiguration{}))
+func TestRFConfiguration(t *testing.T) {
+	have := int(unsafe.Sizeof(RFConfiguration{}))
 	want := RegTemp2 - RegOpMode + 1
 	if have != want {
-		t.Errorf("Sizeof(RfConfiguration) == %d, want %d", have, want)
+		t.Errorf("Sizeof(RFConfiguration) == %d, want %d", have, want)
 	}
 }

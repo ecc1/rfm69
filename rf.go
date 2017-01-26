@@ -8,30 +8,30 @@ import (
 
 const (
 	bitrate   = 16384  // baud
-	channelBw = 250000 // Hz
+	channelBW = 250000 // Hz
 )
 
-func (config *RfConfiguration) Bytes() []byte {
+func (config *RFConfiguration) Bytes() []byte {
 	return (*[RegTemp2 - RegOpMode + 1]byte)(unsafe.Pointer(config))[:]
 }
 
-func (r *Radio) ReadConfiguration() *RfConfiguration {
+func (r *Radio) ReadConfiguration() *RFConfiguration {
 	if r.Error() != nil {
 		return nil
 	}
 	regs := r.hw.ReadBurst(RegOpMode, RegTemp2-RegOpMode+1)
-	return (*RfConfiguration)(unsafe.Pointer(&regs[0]))
+	return (*RFConfiguration)(unsafe.Pointer(&regs[0]))
 }
 
-func (r *Radio) WriteConfiguration(config *RfConfiguration) {
+func (r *Radio) WriteConfiguration(config *RFConfiguration) {
 	r.hw.WriteBurst(RegOpMode, config.Bytes())
 }
 
 func (r *Radio) InitRF(frequency uint32) {
-	rf := DefaultRfConfiguration
+	rf := DefaultRFConfiguration
 	fb := frequencyToRegisters(frequency)
 	br := bitrateToRegisters(bitrate)
-	bw := channelBwToRegister(channelBw)
+	bw := channelBWToRegister(channelBW)
 
 	rf.RegDataModul = PacketMode | ModulationTypeOOK | 0<<ModulationShapingShift
 
@@ -128,13 +128,13 @@ func (r *Radio) ReadModulationType() byte {
 	return r.hw.ReadRegister(RegDataModul) & ModulationTypeMask
 }
 
-func (r *Radio) ChannelBw() uint32 {
+func (r *Radio) ChannelBW() uint32 {
 	bw := r.hw.ReadRegister(RegRxBw)
 	m := r.ReadModulationType()
-	return registerToChannelBw(bw, m)
+	return registerToChannelBW(bw, m)
 }
 
-func registerToChannelBw(bw byte, modType byte) uint32 {
+func registerToChannelBW(bw byte, modType byte) uint32 {
 	mant := 0
 	switch bw & RxBwMantMask {
 	case RxBwMant16:
@@ -158,15 +158,15 @@ func registerToChannelBw(bw byte, modType byte) uint32 {
 	panic("unreachable")
 }
 
-func (r *Radio) SetChannelBw(bw uint32) {
-	v := channelBwToRegister(bw)
+func (r *Radio) SetChannelBW(bw uint32) {
+	v := channelBWToRegister(bw)
 	r.hw.WriteRegister(RegRxBw, 2<<DccFreqShift|v)
 	r.hw.WriteRegister(RegAfcBw, 4<<DccFreqShift|v)
 }
 
 // Channel BW = FXOSC / (RxBwMant * 2^(RxBwExp + 3)), assuming OOK modulation.
 // The caller must add the desired DccFreq field to the result.
-func channelBwToRegister(bw uint32) byte {
+func channelBWToRegister(bw uint32) byte {
 	bb := uint32(1302) // lowest possible channel bandwidth
 	rr := byte(RxBwMant24 | 7<<RxBwExpShift)
 	if bw < bb {

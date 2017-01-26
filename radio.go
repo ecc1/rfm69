@@ -39,7 +39,7 @@ func (r *Radio) Send(data []byte) {
 	copy(packet, data)
 	// Prepare for auto-transmit.
 	// (Automode from/to sleep mode is not reliable.)
-	r.clearFifo()
+	r.clearFIFO()
 	r.setMode(StandbyMode)
 	r.hw.WriteRegister(RegAutoModes, EnterConditionFifoNotEmpty|ExitConditionFifoEmpty|IntermediateModeTx)
 	r.transmit(packet)
@@ -75,10 +75,10 @@ func (r *Radio) transmit(data []byte) {
 			}
 		}
 	}
-	r.finishTx(avail)
+	r.finishTX(avail)
 }
 
-func (r *Radio) finishTx(numBytes int) {
+func (r *Radio) finishTX(numBytes int) {
 	time.Sleep(time.Duration(numBytes) * byteDuration)
 	// Wait for automatic return to standby mode when FIFO is empty.
 	for r.Error() == nil {
@@ -105,7 +105,7 @@ func (r *Radio) fifoThresholdExceeded() bool {
 	return r.hw.ReadRegister(RegIrqFlags2)&FifoLevel != 0
 }
 
-func (r *Radio) clearFifo() {
+func (r *Radio) clearFIFO() {
 	r.hw.WriteRegister(RegIrqFlags2, FifoOverrun)
 }
 
