@@ -9,11 +9,7 @@ import (
 )
 
 const (
-	spiDevice    = "/dev/spidev5.1"
-	spiSpeed     = 6000000 // Hz
-	interruptPin = 46      // Intel Edison GPIO for receive interrupts
-	resetPin     = 47      // Intel Edison GPIO for hardware reset
-	hwVersion    = 0x0204
+	hwVersion = 0x0204
 )
 
 type flavor struct{}
