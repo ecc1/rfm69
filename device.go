@@ -26,6 +26,10 @@ func (f flavor) Speed() int {
 	return spiSpeed
 }
 
+func (f flavor) CustomCS() int {
+	return customCS
+}
+
 func (f flavor) InterruptPin() int {
 	return interruptPin
 }
