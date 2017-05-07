@@ -12,41 +12,41 @@ const (
 	hwVersion = 0x0204
 )
 
-type flavor struct{}
+type hwFlavor struct{}
 
-func (f flavor) Name() string {
+func (f hwFlavor) Name() string {
 	return "RFM69HCW"
 }
 
-func (f flavor) SPIDevice() string {
+func (f hwFlavor) SPIDevice() string {
 	return spiDevice
 }
 
-func (f flavor) Speed() int {
+func (f hwFlavor) Speed() int {
 	return spiSpeed
 }
 
-func (f flavor) CustomCS() int {
+func (f hwFlavor) CustomCS() int {
 	return customCS
 }
 
-func (f flavor) InterruptPin() int {
+func (f hwFlavor) InterruptPin() int {
 	return interruptPin
 }
 
-func (f flavor) ReadSingleAddress(addr byte) byte {
+func (f hwFlavor) ReadSingleAddress(addr byte) byte {
 	return addr
 }
 
-func (f flavor) ReadBurstAddress(addr byte) byte {
+func (f hwFlavor) ReadBurstAddress(addr byte) byte {
 	return addr
 }
 
-func (f flavor) WriteSingleAddress(addr byte) byte {
+func (f hwFlavor) WriteSingleAddress(addr byte) byte {
 	return SPIWriteMode | addr
 }
 
-func (f flavor) WriteBurstAddress(addr byte) byte {
+func (f hwFlavor) WriteBurstAddress(addr byte) byte {
 	return SPIWriteMode | addr
 }
 
@@ -59,7 +59,7 @@ type Radio struct {
 }
 
 func Open() radio.Interface {
-	r := &Radio{hw: radio.Open(flavor{})}
+	r := &Radio{hw: radio.Open(hwFlavor{})}
 	v := r.Version()
 	if r.Error() != nil {
 		return r
