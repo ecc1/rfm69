@@ -11,10 +11,12 @@ const (
 	channelBW = 250000 // Hz
 )
 
+// Bytes returns the RFConfiguration as a byte slice.
 func (config *RFConfiguration) Bytes() []byte {
 	return (*[RegTemp2 - RegOpMode + 1]byte)(unsafe.Pointer(config))[:]
 }
 
+// ReadConfiguration reads the current RFConfiguration from the radio.
 func (r *Radio) ReadConfiguration() *RFConfiguration {
 	if r.Error() != nil {
 		return nil
@@ -23,10 +25,13 @@ func (r *Radio) ReadConfiguration() *RFConfiguration {
 	return (*RFConfiguration)(unsafe.Pointer(&regs[0]))
 }
 
+// WriteConfiguration writes the given RFConfiguration to the radio.
 func (r *Radio) WriteConfiguration(config *RFConfiguration) {
 	r.hw.WriteBurst(RegOpMode, config.Bytes())
 }
 
+// InitRF initializes the radio to communicate with
+// a Medtronic insulin pump at the given frequency.
 func (r *Radio) InitRF(frequency uint32) {
 	rf := DefaultRFConfiguration
 	fb := frequencyToRegisters(frequency)
@@ -86,6 +91,7 @@ func (r *Radio) InitRF(frequency uint32) {
 	r.hw.WriteRegister(RegTestDagc, 0x30)
 }
 
+// Frequency returns the radio's current frequency, in Hertz.
 func (r *Radio) Frequency() uint32 {
 	return registersToFrequency(r.hw.ReadBurst(RegFrfMsb, 3))
 }
@@ -95,6 +101,7 @@ func registersToFrequency(frf []byte) uint32 {
 	return uint32(uint64(f) * FXOSC >> 19)
 }
 
+// SetFrequency sets the radio to the given frequency, in Hertz.
 func (r *Radio) SetFrequency(freq uint32) {
 	r.hw.WriteBurst(RegFrfMsb, frequencyToRegisters(freq))
 }
@@ -104,11 +111,13 @@ func frequencyToRegisters(freq uint32) []byte {
 	return []byte{byte(f >> 16), byte(f >> 8), byte(f)}
 }
 
+// ReadRSSI returns the radio's RSSI, in dBm.
 func (r *Radio) ReadRSSI() int {
 	rssi := r.hw.ReadRegister(RegRssiValue)
 	return -int(rssi) / 2
 }
 
+// Bitrate returns the radio's bit rate, in bps.
 func (r *Radio) Bitrate() uint32 {
 	return registersToBitrate(r.hw.ReadBurst(RegBitrateMsb, 2))
 }
@@ -124,10 +133,12 @@ func bitrateToRegisters(br uint32) []byte {
 	return []byte{byte(b >> 8), byte(b)}
 }
 
+// ReadModulationType returns the radio's modulation type.
 func (r *Radio) ReadModulationType() byte {
 	return r.hw.ReadRegister(RegDataModul) & ModulationTypeMask
 }
 
+// ChannelBW returns the radio's channel bandwidth, in Hertz.
 func (r *Radio) ChannelBW() uint32 {
 	bw := r.hw.ReadRegister(RegRxBw)
 	m := r.ReadModulationType()
@@ -158,6 +169,7 @@ func registerToChannelBW(bw byte, modType byte) uint32 {
 	panic("unreachable")
 }
 
+// SetChannelBW sets the radio's channel bandwidth to the given value, in Hertz.
 func (r *Radio) SetChannelBW(bw uint32) {
 	v := channelBWToRegister(bw)
 	r.hw.WriteRegister(RegRxBw, 2<<DccFreqShift|v)
@@ -181,9 +193,8 @@ func channelBWToRegister(bw uint32) byte {
 			if b >= bw {
 				if b-bw < bw-bb {
 					return r
-				} else {
-					return rr
 				}
+				return rr
 			}
 			bb = b
 			rr = r
@@ -221,6 +232,7 @@ func (r *Radio) modeReady() bool {
 	return r.hw.ReadRegister(RegIrqFlags1)&ModeReady != 0
 }
 
+// Sleep puts the radio into sleep mode.
 func (r *Radio) Sleep() {
 	r.setMode(SleepMode)
 }
@@ -242,6 +254,7 @@ func stateName(mode uint8) string {
 	}
 }
 
+// State returns the radio's current state as a string.
 func (r *Radio) State() string {
 	return stateName(r.mode())
 }

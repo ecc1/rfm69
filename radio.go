@@ -24,6 +24,7 @@ func init() {
 	}
 }
 
+// Send transmits the given packet.
 func (r *Radio) Send(data []byte) {
 	if r.Error() != nil {
 		return
@@ -97,6 +98,7 @@ func (r *Radio) fifoEmpty() bool {
 	return r.hw.ReadRegister(RegIrqFlags2)&FifoNotEmpty == 0
 }
 
+// nolint
 func (r *Radio) fifoFull() bool {
 	return r.hw.ReadRegister(RegIrqFlags2)&FifoFull != 0
 }
@@ -109,6 +111,8 @@ func (r *Radio) clearFIFO() {
 	r.hw.WriteRegister(RegIrqFlags2, FifoOverrun)
 }
 
+// Receive listens with the given timeout for an incoming packet.
+// It returns the packet and the associated RSSI.
 func (r *Radio) Receive(timeout time.Duration) ([]byte, int) {
 	if r.Error() != nil {
 		return nil, 0
@@ -136,28 +140,31 @@ func (r *Radio) Receive(timeout time.Duration) ([]byte, int) {
 		if r.Error() != nil {
 			break
 		}
-		if c != 0 {
-			r.err = r.receiveBuffer.WriteByte(c)
-			continue
+		if c == 0 {
+			// End of packet.
+			return r.finishRX(rssi)
 		}
-		// End of packet.
-		r.setMode(StandbyMode)
-		size := r.receiveBuffer.Len()
-		if size == 0 {
-			break
-		}
-		r.stats.Packets.Received++
-		r.stats.Bytes.Received += size
-		p := make([]byte, size)
-		_, r.err = r.receiveBuffer.Read(p)
-		if r.Error() != nil {
-			break
-		}
-		r.receiveBuffer.Reset()
-		if verbose {
-			log.Printf("received %d-byte packet in %s state", size, r.State())
-		}
-		return p, rssi
+		r.err = r.receiveBuffer.WriteByte(c)
 	}
 	return nil, rssi
+}
+
+func (r *Radio) finishRX(rssi int) ([]byte, int) {
+	r.setMode(StandbyMode)
+	size := r.receiveBuffer.Len()
+	if size == 0 {
+		return nil, rssi
+	}
+	r.stats.Packets.Received++
+	r.stats.Bytes.Received += size
+	p := make([]byte, size)
+	_, r.err = r.receiveBuffer.Read(p)
+	if r.Error() != nil {
+		return nil, rssi
+	}
+	r.receiveBuffer.Reset()
+	if verbose {
+		log.Printf("received %d-byte packet in %s state", size, r.State())
+	}
+	return p, rssi
 }

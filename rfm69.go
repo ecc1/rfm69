@@ -3,7 +3,10 @@ package rfm69
 // http://www.hoperf.com/upload/rf/RFM69HCW-V1.1.pdf
 
 const (
-	FXOSC        = 32000000
+	// FXOSC is the radio's oscillator frequency in Hertz.
+	FXOSC = 32000000
+
+	// SPIWriteMode is used to encode register addresses for SPI writes.
 	SPIWriteMode = 1 << 7
 )
 
@@ -116,6 +119,7 @@ const (
 	RegTestAfc  = 0x71 // AFC offset for low modulation index AFC
 )
 
+// RFConfiguration represents the radio's configuration registers.
 type RFConfiguration struct {
 	// Omit RegFifo to avoid reading or writing it with this struct.
 	RegOpMode        byte // Operating modes of the transceiver
@@ -201,7 +205,7 @@ type RFConfiguration struct {
 	// when reading or writing this struct.
 }
 
-// Configuration register values after reset,
+// ResetRFConfiguration contains the register values after reset,
 // according to data sheet section 6.
 var ResetRFConfiguration = RFConfiguration{
 	RegOpMode:        0x04,
@@ -285,7 +289,8 @@ var ResetRFConfiguration = RFConfiguration{
 	RegTemp2:         0x00,
 }
 
-// Default (recommended) values, according to data sheet section 6.
+// DefaultRFConfiguration contains the default (recommended) values,
+// according to data sheet section 6.
 var DefaultRFConfiguration = RFConfiguration{
 	RegOpMode:        0x04,
 	RegDataModul:     0x00,
