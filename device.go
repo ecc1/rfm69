@@ -58,7 +58,7 @@ type Radio struct {
 	err           error
 }
 
-func Open() radio.Interface {
+func Open() *Radio {
 	r := &Radio{hw: radio.Open(hwFlavor{})}
 	v := r.Version()
 	if r.Error() != nil {
