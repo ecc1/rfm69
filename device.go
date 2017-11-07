@@ -80,7 +80,7 @@ func Open() *Radio {
 		r.SetError(radio.HardwareVersionError{Actual: v, Expected: hwVersion})
 		return r
 	}
-	r.resetPin, r.err = gpio.Output(resetPin, false)
+	r.resetPin, r.err = gpio.Output(resetPin, false, false)
 	if r.Error() != nil {
 		r.hw.Close()
 		return r
