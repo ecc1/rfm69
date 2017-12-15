@@ -14,11 +14,6 @@ const (
 
 type hwFlavor struct{}
 
-// Name returns the radio's name.
-func (f hwFlavor) Name() string {
-	return "RFM69HCW"
-}
-
 // SPIDevice returns the pathname of the radio's SPI device.
 func (f hwFlavor) SPIDevice() string {
 	return spiDevice
@@ -83,7 +78,6 @@ func Open() *Radio {
 	r.resetPin, r.err = gpio.Output(resetPin, false, false)
 	if r.Error() != nil {
 		r.hw.Close()
-		return r
 	}
 	return r
 }
@@ -92,6 +86,16 @@ func Open() *Radio {
 func (r *Radio) Close() {
 	r.setMode(SleepMode)
 	r.hw.Close()
+}
+
+// Name returns the radio's name.
+func (r *Radio) Name() string {
+	return "RFM69HCW"
+}
+
+// Device returns the pathname of the radio's device.
+func (r *Radio) Device() string {
+	return spiDevice
 }
 
 // Version returns the radio's hardware version.
