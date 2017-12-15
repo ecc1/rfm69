@@ -125,15 +125,13 @@ func (r *Radio) Receive(timeout time.Duration) ([]byte, int) {
 	}
 	r.hw.AwaitInterrupt(timeout)
 	rssi := r.ReadRSSI()
-	startedWaiting := time.Time{}
 	for r.Error() == nil {
 		if r.fifoEmpty() {
-			if startedWaiting.IsZero() {
-				startedWaiting = time.Now()
-			} else if time.Since(startedWaiting) >= timeout {
+			if timeout <= 0 {
 				break
 			}
 			time.Sleep(byteDuration)
+			timeout -= byteDuration
 			continue
 		}
 		c := r.hw.ReadRegister(RegFifo)
