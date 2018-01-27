@@ -166,3 +166,16 @@ func (r *Radio) finishRX(rssi int) ([]byte, int) {
 	}
 	return p, rssi
 }
+
+// SendAndReceive transmits the given packet,
+// then listens with the given timeout for an incoming packet.
+// It returns the packet and the associated RSSI.
+// (This could be further optimized by using an Automode to go directly
+// from TX to RX, rather than returning to standby in between.)
+func (r *Radio) SendAndReceive(data []byte, timeout time.Duration) ([]byte, int) {
+	r.Send(data)
+	if r.Error() != nil {
+		return nil, 0
+	}
+	return r.Receive(timeout)
+}
