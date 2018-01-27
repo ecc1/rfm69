@@ -8,7 +8,7 @@ import (
 
 const (
 	bitrate   = 16384  // baud
-	channelBW = 250000 // Hz
+	channelBW = 100000 // Hz
 )
 
 // Bytes returns the RFConfiguration as a byte slice.
