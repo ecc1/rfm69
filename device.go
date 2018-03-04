@@ -59,7 +59,6 @@ type Radio struct {
 	hw            *radio.Hardware
 	resetPin      gpio.OutputPin
 	receiveBuffer bytes.Buffer
-	stats         radio.Statistics
 	err           error
 }
 
@@ -120,11 +119,6 @@ func (r *Radio) Init(frequency uint32) {
 	r.Reset()
 	r.InitRF(frequency)
 	r.setMode(SleepMode)
-}
-
-// Statistics returns the byte and packet counts for the radio device.
-func (r *Radio) Statistics() radio.Statistics {
-	return r.stats
 }
 
 // Error returns the error state of the radio device.

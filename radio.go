@@ -45,10 +45,6 @@ func (r *Radio) Send(data []byte) {
 	r.hw.WriteRegister(RegAutoModes, EnterConditionFifoNotEmpty|ExitConditionFifoEmpty|IntermediateModeTx)
 	r.transmit(packet)
 	r.setMode(SleepMode)
-	if r.Error() == nil {
-		r.stats.Packets.Sent++
-		r.stats.Bytes.Sent += len(data)
-	}
 }
 
 func (r *Radio) transmit(data []byte) {
@@ -153,8 +149,6 @@ func (r *Radio) finishRX(rssi int) ([]byte, int) {
 	if size == 0 {
 		return nil, rssi
 	}
-	r.stats.Packets.Received++
-	r.stats.Bytes.Received += size
 	p := make([]byte, size)
 	_, r.err = r.receiveBuffer.Read(p)
 	if r.Error() != nil {
