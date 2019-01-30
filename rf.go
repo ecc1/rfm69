@@ -73,7 +73,7 @@ func (r *Radio) InitRF(frequency uint32) {
 	// Use 4 bytes for Sync word.
 	rf.RegSyncConfig = SyncOn | 3<<SyncSizeShift
 
-	// Sync word
+	// Sync word.
 	rf.RegSyncValue1 = 0xFF
 	rf.RegSyncValue2 = 0x00
 	rf.RegSyncValue3 = 0xFF
