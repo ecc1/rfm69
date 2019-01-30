@@ -1,5 +1,5 @@
 The `rfm69` package provides a Go interface to an SPI-attached
-[RFM69HCW module.](http://www.hoperf.com/rf_transceiver/modules/RFM69HCW.html)
+[RFM69HCW module.](http://hoperf.com/modules/rf_transceiver/RFM69HCW.html)
 
 An RFM69HCW module on a convenient breakout board
 is [available here](https://www.adafruit.com/products/3070)
@@ -10,7 +10,7 @@ is [available here](https://www.adafruit.com/products/3070)
 A Raspberry Pi add-on module with an RFM69HCW, OLED display, and pushbuttons
 is [available here.](https://www.adafruit.com/product/4072)
 
-![radiofruit bonnet](images/radiofruit.png)
+![rfm69 radiofruit bonnet](images/radiofruit.png)
 
 **Note that an antenna must be attached before using these modules.**
 
