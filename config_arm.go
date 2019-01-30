@@ -1,3 +1,5 @@
+// +build !radiofruit
+
 package rfm69
 
 // Configuration for Raspberry Pi Zero W.
