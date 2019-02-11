@@ -2,7 +2,8 @@
 
 package rfm69
 
-// Configuration for Raspberry Pi Zero W with Adafruit Radiofruit RFM69HCW.
+// Configuration for Raspberry Pi Zero W with Adafruit RFM69HCW bonnet:
+// https://www.adafruit.com/product/4072
 
 const (
 	spiDevice    = "/dev/spidev0.1"
