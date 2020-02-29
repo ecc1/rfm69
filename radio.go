@@ -94,7 +94,6 @@ func (r *Radio) fifoEmpty() bool {
 	return r.hw.ReadRegister(RegIrqFlags2)&FifoNotEmpty == 0
 }
 
-// nolint
 func (r *Radio) fifoFull() bool {
 	return r.hw.ReadRegister(RegIrqFlags2)&FifoFull != 0
 }
