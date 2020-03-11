@@ -34,27 +34,14 @@ func (r *Radio) WriteConfiguration(config *RFConfiguration) {
 // a Medtronic insulin pump at the given frequency.
 func (r *Radio) InitRF(frequency uint32) {
 	rf := DefaultRFConfiguration
-	fb := frequencyToRegisters(frequency)
-	br := bitrateToRegisters(bitrate)
-	bw := channelBWToRegister(channelBW)
 
 	rf.RegDataModul = PacketMode | ModulationTypeOOK | 0<<ModulationShapingShift
-
-	rf.RegBitrateMsb = br[0]
-	rf.RegBitrateLsb = br[1]
-
-	rf.RegFrfMsb = fb[0]
-	rf.RegFrfMid = fb[1]
-	rf.RegFrfLsb = fb[2]
 
 	// Use PA1 with 13 dbM output power.
 	rf.RegPaLevel = Pa1On | 0x1F<<OutputPowerShift
 
 	// Default != reset value
 	rf.RegLna = LnaZin | 1<<LnaCurrentGainShift | 0<<LnaGainSelectShift
-
-	rf.RegRxBw = 2<<DccFreqShift | bw
-	rf.RegAfcBw = 4<<DccFreqShift | bw
 
 	// Interrupt when Sync word is seen.
 	// Cleared when leaving Rx or FIFO is emptied.
@@ -86,6 +73,10 @@ func (r *Radio) InitRF(frequency uint32) {
 	rf.RegPacketConfig2 = AutoRxRestartOff
 
 	r.WriteConfiguration(&rf)
+
+	r.SetFrequency(frequency)
+	r.SetBitrate(bitrate)
+	r.SetChannelBW(channelBW)
 
 	// Default != reset value.
 	r.hw.WriteRegister(RegTestDagc, 0x30)
@@ -126,6 +117,11 @@ func (r *Radio) Bitrate() uint32 {
 func registersToBitrate(br []byte) uint32 {
 	d := uint32(br[0])<<8 + uint32(br[1])
 	return (FXOSC + d/2) / d
+}
+
+// SetBitrate sets the radio's bit rate to the given rate, in bps.
+func (r *Radio) SetBitrate(br uint32) {
+	r.hw.WriteBurst(RegBitrateMsb, bitrateToRegisters(br))
 }
 
 func bitrateToRegisters(br uint32) []byte {

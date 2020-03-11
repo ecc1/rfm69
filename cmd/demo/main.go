@@ -34,6 +34,12 @@ func main() {
 	r.SetChannelBW(bw)
 	dumpRF(r)
 
+	br := uint32(15000)
+	log.Println("")
+	log.Printf("Changing bitrate to %d Hz", br)
+	r.SetBitrate(br)
+	dumpRF(r)
+
 	log.Println("")
 	log.Printf("Sleeping")
 	r.Sleep()
