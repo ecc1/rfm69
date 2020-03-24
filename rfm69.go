@@ -175,7 +175,7 @@ type RFConfiguration struct {
 	RegSyncValue5    byte
 	RegSyncValue6    byte
 	RegSyncValue7    byte
-	RegSyncValue8    byte // Packet mode settings
+	RegSyncValue8    byte
 	RegPacketConfig1 byte // Packet mode settings
 	RegPayloadLength byte // Payload length setting
 	RegNodeAdrs      byte // Node address
