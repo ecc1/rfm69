@@ -37,6 +37,7 @@ func TestFrequency(t *testing.T) {
 	}
 }
 
+// See data sheet Table 9 Bit Rate Examples
 func TestBitrate(t *testing.T) {
 	cases := []struct {
 		br       uint32
@@ -71,6 +72,7 @@ func TestBitrate(t *testing.T) {
 	}
 }
 
+// See data sheet Table 14 Available RxBw Settings
 func TestChannelBW(t *testing.T) {
 	cases := []struct {
 		bw       uint32
