@@ -17,6 +17,7 @@ func main() {
 
 	fmt.Printf("\nTesting individual writes\n")
 	hw := r.Hardware()
+	fmt.Printf("source: %02X %02X %02X\n", 0x44, 0x55, 0x66)
 	hw.WriteRegister(rfm69.RegSyncValue1, 0x44)
 	hw.WriteRegister(rfm69.RegSyncValue2, 0x55)
 	hw.WriteRegister(rfm69.RegSyncValue3, 0x66)
@@ -24,7 +25,9 @@ func main() {
 
 	r.Reset()
 	fmt.Printf("\nTesting burst writes\n")
-	hw.WriteBurst(rfm69.RegSyncValue1, []byte{0x77, 0x88, 0x99})
+	data := []byte{0x77, 0x88, 0x99}
+	fmt.Printf("source: %02X %02X %02X\n", data[0], data[1], data[2])
+	hw.WriteBurst(rfm69.RegSyncValue1, data)
 	readRegs(r)
 }
 
@@ -66,10 +69,10 @@ func readRegs(r *rfm69.Radio) {
 	if r.Error() != nil {
 		log.Fatal(r.Error())
 	}
-	fmt.Printf("individual: %X %X %X\n", x, y, z)
+	fmt.Printf("single: %02X %02X %02X\n", x, y, z)
 	v := hw.ReadBurst(rfm69.RegSyncValue1, 3)
 	if r.Error() != nil {
 		log.Fatal(r.Error())
 	}
-	fmt.Printf("  burst:    %X %X %X\n", v[0], v[1], v[2])
+	fmt.Printf(" burst: %02X %02X %02X\n", v[0], v[1], v[2])
 }
