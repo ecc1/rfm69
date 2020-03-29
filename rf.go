@@ -37,13 +37,13 @@ func (r *Radio) InitRF(frequency uint32) {
 
 	rf.RegDataModul = PacketMode | ModulationTypeOOK | 0<<ModulationShapingShift
 
-	// Use PA1 with 13 dbM output power.
+	// Use PA1 with 13 dBm output power.
 	rf.RegPaLevel = Pa1On | 0x1F<<OutputPowerShift
 
 	// Default != reset value
 	rf.RegLna = LnaZin | 1<<LnaCurrentGainShift | 0<<LnaGainSelectShift
 
-	// Interrupt when Sync word is seen.
+	// Interrupt on DIO0 when Sync word is seen.
 	// Cleared when leaving Rx or FIFO is emptied.
 	rf.RegDioMapping1 = 2 << Dio0MappingShift
 
