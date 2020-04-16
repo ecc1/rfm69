@@ -3,7 +3,6 @@ package rfm69
 import (
 	"fmt"
 	"log"
-	"unsafe"
 )
 
 const (
@@ -11,73 +10,78 @@ const (
 	channelBW = 100000 // Hz
 )
 
-// Bytes returns the RFConfiguration as a byte slice.
-func (config *RFConfiguration) Bytes() []byte {
-	return (*[RegTemp2 - RegOpMode + 1]byte)(unsafe.Pointer(config))[:]
-}
-
-// ReadConfiguration reads the current RFConfiguration from the radio.
-func (r *Radio) ReadConfiguration() *RFConfiguration {
+// ReadConfiguration reads the current register configuration from the radio,
+// using either burst-mode or individual SPI reads.
+func (r *Radio) ReadConfiguration(useBurst bool) []byte {
 	if r.Error() != nil {
 		return nil
 	}
-	regs := r.hw.ReadBurst(RegOpMode, RegTemp2-RegOpMode+1)
-	return (*RFConfiguration)(unsafe.Pointer(&regs[0]))
+	n := len(resetConfiguration)
+	config := make([]byte, n)
+	start := config[ConfigurationStart:]
+	if useBurst {
+		copy(start, r.hw.ReadBurst(ConfigurationStart, n-ConfigurationStart))
+		return config
+	}
+	for i := range start {
+		start[i] = r.hw.ReadRegister(uint8(ConfigurationStart + i))
+	}
+	return config
 }
 
-// WriteConfiguration writes the given RFConfiguration to the radio.
-func (r *Radio) WriteConfiguration(config *RFConfiguration) {
-	r.hw.WriteBurst(RegOpMode, config.Bytes())
+// WriteConfiguration writes the given register configuration to the radio,
+// using either burst-mode or individual SPI writes.
+func (r *Radio) WriteConfiguration(config []byte, useBurst bool) {
+	n := len(resetConfiguration)
+	if len(config) != n {
+		log.Panicf("WriteConfiguration: config length = %d, expected %d", len(config), n)
+		return
+	}
+	start := config[ConfigurationStart:]
+	if useBurst {
+		r.hw.WriteBurst(ConfigurationStart, start)
+		return
+	}
+	for i, v := range start {
+		r.hw.WriteRegister(uint8(ConfigurationStart+i), v)
+	}
 }
 
 // InitRF initializes the radio to communicate with
 // a Medtronic insulin pump at the given frequency.
 func (r *Radio) InitRF(frequency uint32) {
-	rf := DefaultRFConfiguration
-
-	rf.RegDataModul = PacketMode | ModulationTypeOOK | 0<<ModulationShapingShift
-
+	rf := DefaultConfiguration()
+	rf[RegDataModul] = PacketMode | ModulationTypeOOK | 0<<ModulationShapingShift
 	// Use PA1 with 13 dBm output power.
-	rf.RegPaLevel = Pa1On | 0x1F<<OutputPowerShift
-
+	rf[RegPaLevel] = Pa1On | 0x1F<<OutputPowerShift
 	// Default != reset value
-	rf.RegLna = LnaZin | 1<<LnaCurrentGainShift | 0<<LnaGainSelectShift
-
+	rf[RegLna] = LnaZin | 1<<LnaCurrentGainShift | 0<<LnaGainSelectShift
 	// Interrupt on DIO0 when Sync word is seen.
 	// Cleared when leaving Rx or FIFO is emptied.
-	rf.RegDioMapping1 = 2 << Dio0MappingShift
-
+	rf[RegDioMapping1] = 2 << Dio0MappingShift
 	// Default != reset value.
-	rf.RegDioMapping2 = 7 << ClkOutShift
-
+	rf[RegDioMapping2] = 7 << ClkOutShift
 	// Default != reset value.
-	rf.RegRssiThresh = 0xE4
-
+	rf[RegRssiThresh] = 0xE4
 	// Make sure enough preamble bytes are sent.
-	rf.RegPreambleMsb = 0x00
-	rf.RegPreambleLsb = 0x18
-
+	rf[RegPreambleMsb] = 0x00
+	rf[RegPreambleLsb] = 0x18
 	// Use 4 bytes for Sync word.
-	rf.RegSyncConfig = SyncOn | 3<<SyncSizeShift
-
+	rf[RegSyncConfig] = SyncOn | 3<<SyncSizeShift
 	// Sync word.
-	rf.RegSyncValue1 = 0xFF
-	rf.RegSyncValue2 = 0x00
-	rf.RegSyncValue3 = 0xFF
-	rf.RegSyncValue4 = 0x00
-
+	rf[RegSyncValue1] = 0xFF
+	rf[RegSyncValue2] = 0x00
+	rf[RegSyncValue3] = 0xFF
+	rf[RegSyncValue4] = 0x00
 	// Use unlimited length packet format (data sheet section 5.5.2.3).
-	rf.RegPacketConfig1 = FixedLength
-	rf.RegPayloadLength = 0x00
-	rf.RegFifoThresh = TxStartFifoNotEmpty | fifoThreshold<<FifoThresholdShift
-	rf.RegPacketConfig2 = AutoRxRestartOff
-
-	r.WriteConfiguration(&rf)
-
+	rf[RegPacketConfig1] = FixedLength
+	rf[RegPayloadLength] = 0
+	rf[RegFifoThresh] = TxStartFifoNotEmpty | fifoThreshold<<FifoThresholdShift
+	rf[RegPacketConfig2] = AutoRxRestartOff
+	r.WriteConfiguration(rf, true)
 	r.SetFrequency(frequency)
 	r.SetBitrate(bitrate)
 	r.SetChannelBW(channelBW)
-
 	// Default != reset value.
 	r.hw.WriteRegister(RegTestDagc, 0x30)
 }
