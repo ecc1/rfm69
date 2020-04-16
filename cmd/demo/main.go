@@ -28,7 +28,7 @@ func main() {
 	r.SetFrequency(freq)
 	dumpRF(r)
 
-	bw := uint32(100000)
+	bw := uint32(200000)
 	log.Println("")
 	log.Printf("Changing channel bandwidth to %d Hz", bw)
 	r.SetChannelBW(bw)
