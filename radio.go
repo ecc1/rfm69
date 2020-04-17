@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	verbose       = false
+	debug         = false
 	maxPacketSize = 110
 	fifoSize      = 66
 
@@ -19,7 +19,7 @@ const (
 )
 
 func init() {
-	if verbose {
+	if debug {
 		log.SetFlags(log.Ltime | log.Lmicroseconds | log.LUTC)
 	}
 }
@@ -32,7 +32,7 @@ func (r *Radio) Send(data []byte) {
 	if len(data) > maxPacketSize {
 		log.Panicf("attempting to send %d-byte packet", len(data))
 	}
-	if verbose {
+	if debug {
 		log.Printf("sending %d-byte packet in %s state", len(data), r.State())
 	}
 	// Terminate packet with zero byte.
@@ -53,7 +53,7 @@ func (r *Radio) transmit(data []byte) {
 		if avail > len(data) {
 			avail = len(data)
 		}
-		if verbose {
+		if debug {
 			log.Printf("writing %d bytes to TX FIFO\n", avail)
 		}
 		r.hw.WriteBurst(RegFifo, data[:avail])
@@ -83,7 +83,7 @@ func (r *Radio) finishTX(numBytes int) {
 		if s == StandbyMode {
 			break
 		}
-		if verbose || s != TransmitterMode {
+		if debug || s != TransmitterMode {
 			log.Printf("waiting for TX to finish in %s state", stateName(s))
 		}
 		time.Sleep(byteDuration)
@@ -115,7 +115,7 @@ func (r *Radio) Receive(timeout time.Duration) ([]byte, int) {
 	r.hw.WriteRegister(RegAutoModes, 0)
 	r.setMode(ReceiverMode)
 	defer r.setMode(SleepMode)
-	if verbose {
+	if debug {
 		log.Printf("waiting for interrupt in %s state", r.State())
 	}
 	r.hw.AwaitInterrupt(timeout)
@@ -154,7 +154,7 @@ func (r *Radio) finishRX(rssi int) ([]byte, int) {
 		return nil, rssi
 	}
 	r.receiveBuffer.Reset()
-	if verbose {
+	if debug {
 		log.Printf("received %d-byte packet in %s state", size, r.State())
 	}
 	return p, rssi

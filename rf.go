@@ -213,16 +213,16 @@ func (r *Radio) setMode(mode uint8) {
 	if cur&ModeMask == mode {
 		return
 	}
-	if verbose {
+	r.hw.WriteRegister(RegOpMode, cur&^ModeMask|mode)
+	if debug {
 		log.Printf("change from %s to %s", stateName(cur&ModeMask), stateName(mode))
 	}
-	r.hw.WriteRegister(RegOpMode, cur&^ModeMask|mode)
 	for r.Error() == nil {
 		s := r.mode()
 		if s == mode && r.modeReady() {
 			break
 		}
-		if verbose {
+		if debug {
 			log.Printf("  %s", stateName(s))
 		}
 	}
