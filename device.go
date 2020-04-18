@@ -67,6 +67,7 @@ func Open() *Radio {
 	r := &Radio{hw: radio.Open(hwFlavor{})}
 	v := r.Version()
 	if r.Error() != nil {
+		r.hw.Close()
 		return r
 	}
 	if v != hwVersion {
@@ -108,7 +109,7 @@ func (r *Radio) Reset() {
 	if r.Error() != nil {
 		return
 	}
-	_ = r.resetPin.Write(true)
+	r.resetPin.Write(true)
 	time.Sleep(100 * time.Microsecond)
 	r.err = r.resetPin.Write(false)
 	time.Sleep(5 * time.Millisecond)
