@@ -59,6 +59,7 @@ type Radio struct {
 	hw            *radio.Hardware
 	resetPin      gpio.OutputPin
 	receiveBuffer bytes.Buffer
+	txPacket      []byte
 	err           error
 }
 
@@ -78,7 +79,9 @@ func Open() *Radio {
 	r.resetPin, r.err = gpio.Output(resetPin, false, false)
 	if r.Error() != nil {
 		r.hw.Close()
+		return r
 	}
+	r.txPacket = make([]byte, maxPacketSize+1)
 	return r
 }
 

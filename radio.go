@@ -36,15 +36,16 @@ func (r *Radio) Send(data []byte) {
 		log.Printf("sending %d-byte packet in %s state", len(data), r.State())
 	}
 	// Terminate packet with zero byte.
-	packet := make([]byte, len(data)+1)
-	copy(packet, data)
+	copy(r.txPacket, data)
+	r.txPacket[len(data)] = 0
+	packet := r.txPacket[:len(data)+1]
 	// Prepare for auto-transmit.
 	// (Automode from/to sleep mode is not reliable.)
 	r.clearFIFO()
 	r.setMode(StandbyMode)
 	r.hw.WriteRegister(RegAutoModes, EnterConditionFifoNotEmpty|ExitConditionFifoEmpty|IntermediateModeTx)
 	r.transmit(packet)
-	r.setMode(SleepMode)
+	r.setMode(StandbyMode)
 }
 
 func (r *Radio) transmit(data []byte) {
@@ -61,8 +62,7 @@ func (r *Radio) transmit(data []byte) {
 		if len(data) == 0 {
 			break
 		}
-		// Wait until there is room for at least
-		// fifoSize - fifoThreshold bytes in the FIFO.
+		// Wait until there is room for at least fifoSize - fifoThreshold bytes in the FIFO.
 		// Err on the short side here to avoid TXFIFO underflow.
 		time.Sleep(fifoSize / 4 * byteDuration)
 		for r.Error() == nil {
