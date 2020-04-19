@@ -1,9 +1,9 @@
 github.com/ecc1/gpio v0.0.0-20171107174639-450ac9ea6df7/go.mod h1:LXSJyYdvUHvdCZFUJDqKHv0aRRXrTfZIVlYfBOslPmQ=
 github.com/ecc1/gpio v0.0.0-20200212231225-d40e43fcf8f5 h1:caoskihCyJpXaV3oRLl+jYuE+aLRnfcIprUQ6oBxTh8=
 github.com/ecc1/gpio v0.0.0-20200212231225-d40e43fcf8f5/go.mod h1:ZcIrkf+E8KutUpAcNHOHaf2NYukHYOlYTCDxV5zzn04=
-github.com/ecc1/radio v0.0.0-20180304192111-a935dc251ef0 h1:YSYhEBsDZ5PkA3QF+MCcdCTGh0cGqzUBwkNe2TmmQOE=
-github.com/ecc1/radio v0.0.0-20180304192111-a935dc251ef0/go.mod h1:yLbH0uEn8lzhmtDYjjg2Fsg301wuH7QQN6UOzHdEbMc=
-github.com/ecc1/spi v0.0.0-20200213193041-d21dfe67fe72 h1:vJcvnfp+Q6j2qPd6rdq/mOaGIlvNZdkdDiCxkE7YEqI=
-github.com/ecc1/spi v0.0.0-20200213193041-d21dfe67fe72/go.mod h1:CkwtH+RWsm0GcBCmpi4jHsQjmRBnQejPEvxB95hjVDA=
+github.com/ecc1/radio v0.0.0-20200419171134-0864efbcd270 h1:6UfUduLumb8ImfyTLwckaXAf5mVZ3ZsHWwzxePd4/iI=
+github.com/ecc1/radio v0.0.0-20200419171134-0864efbcd270/go.mod h1:F2/WLpt9jko2RixQDhG6zjk+NTxkpO1Zwg/sdkmwSvs=
+github.com/ecc1/spi v0.0.0-20200419165236-942b6408d3f6 h1:1LRSWNRed+sMmquyxvaqRF1H+1+r15IcnLqX0kHc7k4=
+github.com/ecc1/spi v0.0.0-20200419165236-942b6408d3f6/go.mod h1:CkwtH+RWsm0GcBCmpi4jHsQjmRBnQejPEvxB95hjVDA=
 golang.org/x/sys v0.0.0-20200212091648-12a6c2dcc1e4 h1:sfkvUWPNGwSV+8/fNqctR5lS2AqCSqYwXdrjCxp/dXo=
 golang.org/x/sys v0.0.0-20200212091648-12a6c2dcc1e4/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
