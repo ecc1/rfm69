@@ -27,8 +27,8 @@ the wiring of the Adafruit RFM69HCW bonnet:
 
 | Function    | GPIO | Header Pin |
 | ----------- | ---- | ---------- |
-`SPI0 MOSI`   | 10   | 19
-`SPI0 MISO`   |  9   | 21
+`SPI0 SDO`   | 10   | 19
+`SPI0 SDI`   |  9   | 21
 `SPI0 SCLK`   | 11   | 23
 `SPI0 CE1`    |  7   | 26
 `RFM69 DIO0`  | 22   | 15
@@ -42,8 +42,8 @@ The default configuration for 386 CPUs assumes the following wiring:
 
 | Function    | GPIO | Mini-Breakout Pin |
 | ----------- | ---- | ----------------- |
-`SPI5 MOSI`   | 115  | J17-12
-`SPI5 MISO`   | 114  | J18-11
+`SPI5 SDO`   | 115  | J17-12
+`SPI5 SDI`   | 114  | J18-11
 `SPI5 SCLK`   | 109  | J17-11
 `SPI5 CE1`    | 111  | J17-10
 `RFM69 DIO0`  |  46  | J19-5
